@@ -1,0 +1,44 @@
+
+#video {
+  max-width: 300px;
+  max-height: 300px;
+  transform: scale(1,1) !important;
+}
+
+#canvas {
+  display: none;
+}
+
+#imageSnapped {
+  display: block;
+  max-width: 100%;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+#wordsBack {
+  display: none;
+}
+
+#showPicture {
+  position: relative;
+  display: inline-block;
+}
+
+#showWords {
+  display: none;
+  background-color: rgba(50, 50, 50, 0.6);
+  position: absolute;
+  top: 40%;
+  left: 0;
+  padding: 5px 15px;
+  color: white;
+}
+
+#ending {
+  font-size: 8px;
+  color: #bbb;
+  padding: 10px 50px;
+}

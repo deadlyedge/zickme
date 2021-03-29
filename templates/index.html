@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block page_content %}
+
+<div class="container">
+    <div class="alert alert-warning">
+        <button class="close" data-dismiss="alert" type="button">&times;</button>
+        {{ message }}
+    </div>
+    <form action="" method="post"
+          class="form" enctype="multipart/form-data">
+        <div class="form-group  required" id="passDiv"><label class="control-label" for="passArea">your pass:</label>
+            <input class="form-control" id="passArea" name="passArea"
+                   required type="password" value="" placeholder="输入你的口令">
+        </div>
+        <div id="getPicture">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div id="showPicture">
+                <img id="imageSnapped" src="">
+                <div id="showWords"></div>
+            </div>
+            <p><button class="btn btn-danger" id="snap" type="button">Snap Photo</button></p>
+        </div>
+
+        <input class="btn btn-warning" id="reset" name="reset" type="button" value="one more">
+        <input class="btn btn-success" id="submit" name="submit" type="submit" value="get words!">
+
+        <div class="form-group" id="wordsBack"><label class="control-label" for="wordsArea">your words:</label>
+            <textarea class="form-control" id="wordsArea" name="wordsArea"></textarea>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+$(document).ready(function () {
+    $('.alert').hide();
+    const webcamElement = document.getElementById('video');
+    const canvasElement = document.getElementById('canvas');
+    const webcam = new Webcam(webcamElement, 'environment', canvasElement);  //
+    var picture = null;
+
+    webcam.start()
+    .then(result =>{
+        console.log("webcam started");
+    })
+    .catch(err => {
+        console.log(err);
+    });
+
+    $('#snap, #video').click(function() {
+        let snapped = webcam.snap();
+        picture = canvasElement.toDataURL('image/jpeg');
+        $('#imageSnapped').attr('src', picture);
+    });
+
+    $('#reset').click(function() {
+        picture = null;
+        $('#imageSnapped').attr('src', '');
+        $('#passArea').val('');
+        $('#showWords').text('');
+        $('#showWords').hide();
+        $('#video, #passDiv, #submit, #snap').show(500);
+    });
+
+    $('#submit').click(function(event) {
+        event.preventDefault();
+        if( !$('#passArea').val() ) {
+            alert('需要填写PASS');
+            return false;
+        };
+        if(picture == null){
+            let snapped = webcam.snap();
+            picture = canvasElement.toDataURL('image/jpeg');
+            $('#imageSnapped').attr('src', picture);
+        };
+        var form = $('.form')[0];
+        var data = new FormData(form);
+        data.append('picture', picture);
+        $('#submit').prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: '/',
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                //$(".alert").show();
+                //$(".alert").text(data);
+                $('#video, #passDiv, #submit, #snap').hide();
+                $('#showWords').text(data);
+                $('#showWords').show(1000);
+                $("#submit").prop("disabled", false);
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
