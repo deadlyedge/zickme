@@ -10,7 +10,7 @@ from urllib.request import urlopen
 SAMPLE_POINTS = 200  # 图像细节取样数
 MATCH_POINT = 0.1  # 接近1则比较严格
 
-myclient = pymongo.MongoClient('mongodb://xdream:sima5654@192.168.50.22/')
+myclient = pymongo.MongoClient('mongodb://xdream:doNOTgo99@192.168.50.22/')
 mydb = myclient['zickme']
 
 app = Flask(__name__)
@@ -69,14 +69,14 @@ def index():
         picture = data.get('picture')
         passCode = data.get('passArea')
         readBack = mydb.aZick.find_one({'passCode': passCode})
-        try:
+        try:                                 # try to get image code from database
             readCode = pickle.loads(readBack['imageCode'])
         except TypeError:
             return '没有这个pass！'
         else:
-            with urlopen(picture) as response:
+            with urlopen(picture) as response:  # convert base64 to array
                 picture = response.read()
-            if matchWithDB(readCode, getImageCode(picture)[1]):
+            if matchWithDB(readCode, getImageCode(picture)[1]):  # compare incoming picture with database
                 return readBack["words"]
             else:
                 return '图片密码不匹配'
@@ -93,7 +93,7 @@ def maker():
         picture = data['picture']
         words = data['wordsArea']
         passCode = data['passArea']
-        with urlopen(picture) as response:
+        with urlopen(picture) as response:      # convert base64 to array
             picture = response.read()
         imageCode = getImageCode(picture)[1]
         print(imageCode, words, passCode)
