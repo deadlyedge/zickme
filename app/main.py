@@ -10,7 +10,7 @@ from urllib.request import urlopen
 SAMPLE_POINTS = 200  # 图像细节取样数
 MATCH_POINT = 0.1  # 接近1则比较严格
 
-myclient = pymongo.MongoClient('mongodb://xdream:doNOTgo99@192.168.50.22/')
+myclient = pymongo.MongoClient('mongodb://xdream:sima5654@192.168.50.22/')
 mydb = myclient['zickme']
 
 app = Flask(__name__)
