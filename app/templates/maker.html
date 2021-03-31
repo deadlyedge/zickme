@@ -67,24 +67,23 @@ $(document).ready(function () {
             picture = canvasElement.toDataURL('image/jpeg');
             $('#imageSnapped').attr('src', picture);
         };
-        var form = $('.form')[0];
-        var data = new FormData(form);
-        data.append('picture', canvasElement.toDataURL('image/jpg'));
+        var data = {
+            passArea: $('#passArea').val(),
+            wordsArea: $('#wordsArea').val(),
+            picture: picture
+        };
         $('#submit').prop('disabled', true);
 
         $.ajax({
             type: 'POST',
             url: 'maker',
-            data: data,
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000,
-            success: function (data) {
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function (response) {
                 $(".alert").show();
-                $(".alert").text(data);
+                $(".alert").text(response);
                 $("#submit").prop("disabled", false);
-                alert('Your words ' + data + ' is saved!');
+                alert('Your words ' + response + ' is saved!');
                 window.location.href = '/'
             }
         });

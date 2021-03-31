@@ -61,13 +61,10 @@ def internal_server_error(e):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # picture = None
-    # words = None
-    # passCode = None
     if request.method == 'POST':
-        data = request.form
-        picture = data.get('picture')
-        passCode = data.get('passArea')
+        data = request.get_json()
+        picture = data['picture']
+        passCode = data['passArea']
         readBack = mydb.aZick.find_one({'passCode': passCode})
         try:                                 # try to get image code from database
             readCode = pickle.loads(readBack['imageCode'])
@@ -85,11 +82,8 @@ def index():
 
 @app.route('/maker', methods=['GET', 'POST'])
 def maker():
-    # picture = None
-    # words = None
-    # passCode = None
     if request.method == 'POST':
-        data = request.form
+        data = request.get_json()
         picture = data['picture']
         words = data['wordsArea']
         passCode = data['passArea']

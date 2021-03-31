@@ -12,7 +12,7 @@
           class="form" enctype="multipart/form-data">
         <div class="form-group  required" id="passDiv"><label class="control-label" for="passArea">your pass:</label>
             <input class="form-control" id="passArea" name="passArea"
-                   required type="password" value="" placeholder="输入你的口令">
+                   required type="password" placeholder="输入你的口令">
         </div>
         <div id="getPicture">
             <video id="video" autoplay playsinline></video>
@@ -77,24 +77,20 @@ $(document).ready(function () {
             picture = canvasElement.toDataURL('image/jpeg');
             $('#imageSnapped').attr('src', picture);
         };
-        var form = $('.form')[0];
-        var data = new FormData(form);
-        data.append('picture', picture);
+        var data = {
+            passArea: $('#passArea').val(),
+            picture: picture
+        };
         $('#submit').prop('disabled', true);
 
         $.ajax({
             type: 'POST',
             url: '/',
-            data: data,
-            processData: false,
-            contentType: false,
-            cache: false,
-            timeout: 600000,
-            success: function (data) {
-                //$(".alert").show();
-                //$(".alert").text(data);
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            success: function (response) {
                 $('#video, #passDiv, #submit, #snap').hide();
-                $('#showWords').text(data);
+                $('#showWords').text(response);
                 $('#showWords').show(1000);
                 $("#submit").prop("disabled", false);
             }
