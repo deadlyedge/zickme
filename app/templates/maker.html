@@ -16,13 +16,16 @@
             <img id="imageSnapped" src="">
             <p><button class="btn btn-danger" id="snap" type="button">Snap Photo</button></p>
         </div>
+        <div class="form-group  required"><label class="control-label" for="passArea">Your <b>PASS</b>:</label>
+            <p>Make a <b>PASS</b>, which you could share it around.</p>
+            <p>Your friend or just "Someone" will get your words by the PASS and with a picture "Similar" to the one you just shot. </p>
+            <input class="form-control input-lg" id="passArea" name="passArea"
+                   required placeholder="添加一个口令">
+            <div id="pass_response"></div>
+        </div>
         <div class="form-group  required"><label class="control-label" for="wordsArea">your words:</label>
             <textarea class="form-control" id="wordsArea" name="wordsArea"
                       required placeholder="输入你想说的话"></textarea>
-        </div>
-        <div class="form-group  required"><label class="control-label" for="passArea">your pass:</label>
-            <input class="form-control" id="passArea" name="passArea"
-                   required type="password" value="" placeholder="添加一个口令">
         </div>
         <input class="btn btn-success" id="submit" name="submit" type="submit" value="POST ZICK!">
     </form>
@@ -46,6 +49,23 @@ $(document).ready(function () {
         console.log(err);
     });
 
+    $("#passArea").keyup(function(){
+        var username = $(this).val().trim();
+        if (username != '') {
+            $.ajax({
+                url: 'passCheck',
+                type: 'post',
+                data: JSON.stringify({username: username}),
+                contentType: "application/json",
+                success: function(response){
+                    $('#pass_response').html(response);
+                }
+            });
+        } else {
+            $("#pass_response").html("");
+        }
+    });
+
     $('#snap, #video').click(function() {
         let snapped = webcam.snap();
         picture = canvasElement.toDataURL('image/jpeg');
@@ -56,6 +76,11 @@ $(document).ready(function () {
         event.preventDefault();
         if( !$('#passArea').val() ) {
             alert('需要填写PASS');
+            return false;
+        };
+        if( $('#pass_response').text() ) {
+            alert('PASS不可用，请重新填写');
+            $('#passArea').focus();
             return false;
         };
         if( !$('#wordsArea').val() ) {

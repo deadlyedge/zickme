@@ -3,7 +3,7 @@ import pickle
 import pymongo
 import cv2
 import numpy as np
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_bootstrap import Bootstrap
 from urllib.request import urlopen
 
@@ -63,15 +63,14 @@ def internal_server_error(e):
 def index():
     if request.method == 'POST':
         data = request.get_json()
-        picture = data['picture']
         passCode = data['passArea']
         readBack = mydb.aZick.find_one({'passCode': passCode})
-        try:                                 # try to get image code from database
+        try:  # try to get image code from database
             readCode = pickle.loads(readBack['imageCode'])
         except TypeError:
             return '没有这个pass！'
         else:
-            with urlopen(picture) as response:  # convert base64 to array
+            with urlopen(data['picture']) as response:  # convert base64 to array
                 picture = response.read()
             if matchWithDB(readCode, getImageCode(picture)[1]):  # compare incoming picture with database
                 return readBack["words"]
@@ -84,16 +83,30 @@ def index():
 def maker():
     if request.method == 'POST':
         data = request.get_json()
-        picture = data['picture']
         words = data['wordsArea']
         passCode = data['passArea']
-        with urlopen(picture) as response:      # convert base64 to array
+        with urlopen(data['picture']) as response:  # convert base64 to array
             picture = response.read()
         imageCode = getImageCode(picture)[1]
         print(imageCode, words, passCode)
         writeDB(imageCode, words, passCode)
         return words
     return render_template('maker.html')
+
+
+@app.route('/passCheck', methods=['POST'])
+def passCheck():
+    if request.method == 'POST':
+        data = request.get_json()
+        readBack = mydb.aZick.find_one({'passCode': data['username']})
+        if readBack:
+            resp = jsonify('PASS unavailable')
+            resp.status_code = 200
+            return resp
+        else:
+            resp = jsonify('')
+            resp.status_code = 200
+            return resp
 
 
 if __name__ == '__main__':
