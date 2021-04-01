@@ -1,6 +1,6 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}ZICK.me{% endblock %}
+{% block title %}Zick.me{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -26,6 +26,7 @@
             <ul class="nav navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="/maker">Maker</a></li>
+                <li class="nav-item disabled"><a class="nav-link" href="#">我们不会存储您的图片。We will NOT save your image.</a></li>
             </ul>
         </div>
     </div>
@@ -37,12 +38,15 @@
     {% block page_content %}{% endblock %}
 </div>
 <div class="container" id="ending">
-    <span>This project is made for anyone, who wants to make some image 'mean something', and then share it to everyone, who wants to know that 'mean'.</span>
-    <span>Zickme will NOT save your image! Only the Vector information will be save.  for more details, visit
+    <p>This project is made for anyone, who wants to make some image 'mean something', and then share it to everyone, who wants to know that 'mean'.</p>
+    <p>Zickme不存储您的图片，被存储的只有矢量节点信息。</p>
+    <p>Zickme will NOT save your image! Only the Vector information will be save. </p>
+    <p>for more details, </p>
+    <p>visit
         <a href="https://github.com/deadlyedge/zickme">Github...deadlyedge/zickme</a>
         or <a href = "mailto:xdream@gmail.com?subject=Feedback about Zickme&body=Message">
-        Send me a Feedback
-        </a></span>
+        Send me a Feedback.
+        </a></p>
 </div>
 {% endblock %}
 

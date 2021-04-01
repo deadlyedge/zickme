@@ -17,8 +17,9 @@
             <p><button class="btn btn-danger" id="snap" type="button">Snap Photo</button></p>
         </div>
         <div class="form-group  required"><label class="control-label" for="passArea">Your <b>PASS</b>:</label>
-            <p>Make a <b>PASS</b>, which you could share it around.</p>
-            <p>Your friend or just "Someone" will get your words by the PASS and with a picture "Similar" to the one you just shot. </p>
+            <p class="directions">Make a <b>PASS</b>, which you could share it around.</p>
+            <p class="directions">想一个口令，当人们拍到和你一样的照片并使用你的口令，你的话就会出现</p>
+            <p class="directions">Your friend or just "Someone" will get your words by the PASS and with a picture "Similar" to the one you just shot. </p>
             <input class="form-control input-lg" id="passArea" name="passArea"
                    required placeholder="添加一个口令">
             <div id="pass_response"></div>
@@ -49,7 +50,7 @@ $(document).ready(function () {
         console.log(err);
     });
 
-    $("#passArea").keyup(function(){
+    $("#passArea").on('keyup focusout', function(){
         var username = $(this).val().trim();
         if (username != '') {
             $.ajax({
