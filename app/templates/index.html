@@ -2,49 +2,47 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-
-<div class="container">
-    <div class="alert alert-warning">
-        <button class="close" data-dismiss="alert" type="button">&times;</button>
-        {{ message }}
-    </div>
-    <form action="" method="post"
-          class="form" enctype="multipart/form-data">
-        <div class="form-group  required" id="passDiv">
-            <label class="control-label" for="passArea">Your PASS:</label>
-            <p class="directions">Gives you by "Someone" or from "Somewhere".</p>
-            <p class="directions">不知从哪里弄来的口令</p>
-            <input class="form-control input-lg" id="passArea" name="passArea"
-                   required placeholder="输入你的口令">
-        </div>
-        <div id="getPicture">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas"></canvas>
-            <div id="showPicture">
-                <img id="imageSnapped" src="">
-                <div id="showWords"></div>
-            </div>
-            <p><button class="btn btn-danger" id="snap" type="button">Snap Photo</button></p>
-        </div>
-
-        <input class="btn btn-warning" id="reset" name="reset" type="button" value="one more">
-        <input class="btn btn-success" id="submit" name="submit" type="submit" value="get words!">
-
-        <div class="form-group" id="wordsBack"><label class="control-label" for="wordsArea">your words:</label>
-            <textarea class="form-control" id="wordsArea" name="wordsArea"></textarea>
-        </div>
-    </form>
+<div class="alert alert-warning">
+    <button class="close" data-dismiss="alert" type="button">&times;</button>
+    {{ message }}
 </div>
+<form action="" method="post"
+      class="form" enctype="multipart/form-data">
+        <p class="directions">Gives you by "Someone" or from "Somewhere". 不知从哪里弄来的口令</p>
+    <div class="input-group mb-3 required" id="passDiv">
+        <span class="input-group-text" id="basic-addon1">!PASS</span>
+        <input class="form-control input-lg" id="passArea" name="passArea"
+               required placeholder="输入你的口令">
+    </div>
+    <div id="getPicture">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <div id="showPicture">
+            <img id="imageSnapped" src="">
+            <div id="showWords"></div>
+        </div>
+        <p><button class="btn btn-outline-danger" id="snap" type="button">Snap Photo</button></p>
+    </div>
+
+    <input class="btn btn-outline-warning" id="reset" name="reset" type="button" value="One more...">
+    <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="Get WORDS!">
+
+    <div class="form-group" id="wordsBack"><label class="control-label" for="wordsArea">Your WORDS:</label>
+        <textarea class="form-control" id="wordsArea" name="wordsArea"></textarea>
+    </div>
+</form>
 {% endblock %}
 {% block scripts %}
 {{ super() }}
 <script>
 $(document).ready(function () {
     $('.alert').hide();
+    $('#home').addClass('active');
     const webcamElement = document.getElementById('video');
     const canvasElement = document.getElementById('canvas');
     const webcam = new Webcam(webcamElement, 'environment', canvasElement);  //
     var picture = null;
+    $('#passArea').focus()
 
     webcam.start()
     .then(result =>{
@@ -66,13 +64,15 @@ $(document).ready(function () {
         $('#passArea').val('');
         $('#showWords').text('');
         $('#showWords').hide();
-        $('#video, #passDiv, #submit, #snap').show(500);
+        $('#video, #passDiv, #submit, #snap, .directions').show(500);
+        $('#passArea').focus();
     });
 
     $('#submit').click(function(event) {
         event.preventDefault();
         if( !$('#passArea').val() ) {
             alert('需要填写PASS');
+            $('#passArea').focus();
             return false;
         };
         if(picture == null){
@@ -92,7 +92,7 @@ $(document).ready(function () {
             data: JSON.stringify(data),
             contentType: "application/json",
             success: function (response) {
-                $('#video, #passDiv, #submit, #snap').hide();
+                $('#video, #passDiv, #submit, #snap, .directions').hide();
                 $('#showWords').text(response);
                 $('#showWords').show(1000);
                 $("#submit").prop("disabled", false);

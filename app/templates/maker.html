@@ -2,41 +2,41 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
-
-<div class="container">
-    <div class="alert alert-warning">
-        <button class="close" data-dismiss="alert" type="button">&times;</button>
-        {{ message }}
-    </div>
-    <form action="" method="post"
-          class="form" enctype="multipart/form-data" role="form">
-        <div id="getPicture">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas"></canvas>
-            <img id="imageSnapped" src="">
-            <p><button class="btn btn-danger" id="snap" type="button">Snap Photo</button></p>
-        </div>
-        <div class="form-group  required"><label class="control-label" for="passArea">Your <b>PASS</b>:</label>
-            <p class="directions">Make a <b>PASS</b>, which you could share it around.</p>
-            <p class="directions">想一个口令，当人们拍到和你一样的照片并使用你的口令，你的话就会出现</p>
-            <p class="directions">Your friend or just "Someone" will get your words by the PASS and with a picture "Similar" to the one you just shot. </p>
-            <input class="form-control input-lg" id="passArea" name="passArea"
-                   required placeholder="添加一个口令">
-            <div id="pass_response"></div>
-        </div>
-        <div class="form-group  required"><label class="control-label" for="wordsArea">your words:</label>
-            <textarea class="form-control" id="wordsArea" name="wordsArea"
-                      required placeholder="输入你想说的话"></textarea>
-        </div>
-        <input class="btn btn-success" id="submit" name="submit" type="submit" value="POST ZICK!">
-    </form>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+<form action="" method="post"
+      class="form" enctype="multipart/form-data" role="form">
+    <p></p>
+    <div id="getPicture mb-3">
+        <video id="video" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <img id="imageSnapped" src="">
+        <p><button class="btn btn-outline-danger" id="snap" type="button">Snap Photo</button></p>
+    </div>
+        <p class="directions">Make a <b>PASS</b>, which you could share it around.</p>
+        <p class="directions">想一个口令，当人们拍到和你一样的照片并使用你的口令，你的话就会出现</p>
+        <p class="directions">Your friend or just "Someone" will get your words by the PASS and with a picture "Similar" to the one you just shot. </p>
+    <div class="input-group required" id="passDiv">
+        <span class="input-group-text" id="basic-addon1">!PASS</span>
+        <input class="form-control input-lg" id="passArea" name="passArea"
+               required placeholder="输入你的口令">
+    </div>
+    <div id="pass_response"></div>
+    <div class="input-group mt-3 mb-3 required">
+        <span class="input-group-text">:WORDS</span>
+        <textarea class="form-control" id="wordsArea" name="wordsArea"
+                  placeholder="输入你想说的话"></textarea>
+    </div>
+    <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="!PASS:WORDS">
+</form>
 {% endblock %}
 {% block scripts %}
 {{ super() }}
 <script>
 $(document).ready(function () {
     $('.alert').hide();
+    $('#maker').addClass('active');
     const webcamElement = document.getElementById('video');
     const canvasElement = document.getElementById('canvas');
     const webcam = new Webcam(webcamElement, 'environment', canvasElement);  //
@@ -71,12 +71,14 @@ $(document).ready(function () {
         let snapped = webcam.snap();
         picture = canvasElement.toDataURL('image/jpeg');
         $('#imageSnapped').attr('src', picture);
+        $('#passArea').focus();
     });
 
     $('#submit').click(function(event) {
         event.preventDefault();
         if( !$('#passArea').val() ) {
             alert('需要填写PASS');
+            $('#passArea').focus();
             return false;
         };
         if( $('#pass_response').text() ) {
@@ -86,6 +88,7 @@ $(document).ready(function () {
         };
         if( !$('#wordsArea').val() ) {
             alert('也需要填写你想说的话');
+            $('#wordsArea').focus();
             return false;
         };
         if(picture == null){

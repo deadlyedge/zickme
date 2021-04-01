@@ -1,3 +1,6 @@
+#getPicture {
+  margin-top: 10px;
+}
 
 #video {
   max-width: 300px;
@@ -67,4 +70,9 @@
   font-style: italic;
   color: #888;
   margin-bottom: 5px;
+}
+
+.toast {
+  min-width: 300px;
+  width: 50%;
 }
