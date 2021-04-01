@@ -4,7 +4,6 @@ import pymongo
 import cv2
 import numpy as np
 from flask import Flask, render_template, request, jsonify
-from flask_bootstrap import Bootstrap
 from urllib.request import urlopen
 
 SAMPLE_POINTS = 200  # 图像细节取样数
@@ -15,7 +14,6 @@ mydb = myclient['zickme']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'some more hard work to do'
-bootstrap = Bootstrap(app)
 
 
 def getImageCode(imageFile):
