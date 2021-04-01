@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 
 {% block page_content %}
-<div class="alert alert-warning">
-    <button class="close" data-dismiss="alert" type="button">&times;</button>
-    {{ message }}
-</div>
 <form action="" method="post"
       class="form" enctype="multipart/form-data">
         <p class="directions">Gives you by "Someone" or from "Somewhere". 不知从哪里弄来的口令</p>
@@ -35,7 +31,6 @@
 {{ super() }}
 <script>
 $(document).ready(function () {
-    $('.alert').hide();
     $('#home').addClass('active');
     const webcamElement = document.getElementById('video');
     const canvasElement = document.getElementById('canvas');

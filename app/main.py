@@ -66,14 +66,14 @@ def index():
         try:  # try to get image code from database
             readCode = pickle.loads(readBack['imageCode'])
         except TypeError:
-            return '没有这个pass！'
+            return '没有这个!PASS'
         else:
             with urlopen(data['picture']) as response:  # convert base64 to array
                 picture = response.read()
             if matchWithDB(readCode, getImageCode(picture)[1]):  # compare incoming picture with database
                 return readBack["words"]
             else:
-                return '图片密码不匹配'
+                return '图片PASS不匹配'
     return render_template('index.html')
 
 
