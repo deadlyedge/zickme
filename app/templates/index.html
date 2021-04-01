@@ -63,7 +63,7 @@ $(document).ready(function () {
         $('#imageSnapped').attr('src', '');
         $('#passArea').val('');
         $('#showWords').text('');
-        $('#showWords').hide();
+        $('#showWords, #showPicture').hide();
         $('#video, #passDiv, #submit, #snap, .directions').show(500);
         $('#passArea').focus();
     });
@@ -94,7 +94,7 @@ $(document).ready(function () {
             success: function (response) {
                 $('#video, #passDiv, #submit, #snap, .directions').hide();
                 $('#showWords').text(response);
-                $('#showWords').show(1000);
+                $('#showWords, #showPicture').show(500);
                 $("#submit").prop("disabled", false);
             }
         });

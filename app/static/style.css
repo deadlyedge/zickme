@@ -76,3 +76,7 @@
   min-width: 300px;
   width: 50%;
 }
+
+main {
+  font-family: "DejaVu Sans Mono";
+}
