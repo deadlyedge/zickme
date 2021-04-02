@@ -29,7 +29,7 @@
         <textarea class="form-control" id="wordsArea" name="wordsArea"
                   placeholder="输入你想说的话"></textarea>
     </div>
-    <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="张贴:post">
+    <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="张贴:Post">
 </form>
 {% endblock %}
 {% block scripts %}
@@ -112,11 +112,16 @@ $(document).ready(function () {
             success: function (response) {
                 $(".alert").show();
                 $(".alert").text(response);
-                $("#submit").prop("disabled", false);
                 alert('Your words ' + response + ' is saved!');
                 window.location.href = '/'
+            },
+            error: function (e) {
+                alert(e.responseText);
+                $('#passArea').focus();
             }
         });
+
+        $("#submit").prop("disabled", false);
     });
 });
 </script>

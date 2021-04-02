@@ -6,6 +6,8 @@ import numpy as np
 from flask import Flask, render_template, request, jsonify
 from urllib.request import urlopen
 
+from pymongo.errors import DuplicateKeyError
+
 SAMPLE_POINTS = 200  # 图像细节取样数
 MATCH_POINT = 0.1  # 接近1则比较严格
 
@@ -87,7 +89,11 @@ def maker():
             picture = response.read()
         imageCode = getImageCode(picture)[1]
         print(imageCode, words, passCode)
-        writeDB(imageCode, words, passCode)
+        try:
+            writeDB(imageCode, words, passCode)
+        except DuplicateKeyError:
+            # raise Exception('请尝试其他PASS')
+            return '请尝试其他PASS', 400
         return words
     return render_template('maker.html')
 
