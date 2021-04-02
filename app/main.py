@@ -3,10 +3,9 @@ import pickle
 import pymongo
 import cv2
 import numpy as np
-from flask import Flask, render_template, request, jsonify
-from urllib.request import urlopen
-
 from pymongo.errors import DuplicateKeyError
+from quart import Quart, render_template, request, jsonify
+from urllib.request import urlopen
 
 SAMPLE_POINTS = 200  # 图像细节取样数
 MATCH_POINT = 0.1  # 接近1则比较严格
@@ -14,7 +13,7 @@ MATCH_POINT = 0.1  # 接近1则比较严格
 myclient = pymongo.MongoClient('mongodb://xdream:sima5654@192.168.50.22/')
 mydb = myclient['zickme']
 
-app = Flask(__name__)
+app = Quart(__name__)
 app.config['SECRET_KEY'] = 'some more hard work to do'
 
 
@@ -50,19 +49,19 @@ def matchWithDB(code1, code2):
 
 
 @app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+async def page_not_found(e):
+    return await render_template('404.html'), 404
 
 
 @app.errorhandler(500)
-def internal_server_error(e):
-    return render_template('500.html'), 500
+async def internal_server_error(e):
+    return await render_template('500.html'), 500
 
 
 @app.route('/', methods=['GET', 'POST'])
-def index():
+async def index():
     if request.method == 'POST':
-        data = request.get_json()
+        data = await request.get_json()
         passCode = data['passArea']
         readBack = mydb.aZick.find_one({'passCode': passCode})
         try:  # try to get image code from database
@@ -76,13 +75,13 @@ def index():
                 return readBack["words"]
             else:
                 return '图片PASS不匹配'
-    return render_template('index.html')
+    return await render_template('index.html')
 
 
 @app.route('/maker', methods=['GET', 'POST'])
-def maker():
+async def maker():
     if request.method == 'POST':
-        data = request.get_json()
+        data = await request.get_json()
         words = data['wordsArea']
         passCode = data['passArea']
         with urlopen(data['picture']) as response:  # convert base64 to array
@@ -95,13 +94,13 @@ def maker():
             # raise Exception('请尝试其他PASS')
             return '请尝试其他PASS', 400
         return words
-    return render_template('maker.html')
+    return await render_template('maker.html')
 
 
 @app.route('/passCheck', methods=['POST'])
-def passCheck():
+async def passCheck():
     if request.method == 'POST':
-        data = request.get_json()
+        data = await request.get_json()
         readBack = mydb.aZick.find_one({'passCode': data['username']})
         if readBack:
             resp = jsonify('PASS unavailable')
