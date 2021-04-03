@@ -50,6 +50,7 @@ $(document).ready(function () {
         let snapped = webcam.snap();
         picture = canvasElement.toDataURL('image/jpeg');
         $('#imageSnapped').attr('src', picture);
+        $('#showPicture').show();
     });
 
     $('#reset').click(function() {
