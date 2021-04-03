@@ -7,6 +7,11 @@
   max-height: 300px;
   transform: scale(1,1) !important;
 }
+#videoXP {
+  max-width: 100%;
+  max-height: 500px;
+  transform: scale(1,1) !important;
+}
 
 #canvas {
   display: none;

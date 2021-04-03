@@ -3,7 +3,7 @@ import pickle
 import pymongo
 import cv2
 import numpy as np
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from urllib.request import urlopen
 
 from pymongo.errors import DuplicateKeyError
@@ -41,7 +41,10 @@ def writeDB(codes, words, passCode):
 
 def matchWithDB(code1, code2):
     bf = cv2.BFMatcher(cv2.NORM_HAMMING)
-    matches = bf.knnMatch(code1, code2, k=2)
+    try:
+        matches = bf.knnMatch(code1, code2, k=2)
+    except cv2.error:
+        return False
     goodMatch = [m for (m, n) in matches if m.distance < 0.8 * n.distance]
     print(len(goodMatch) / len(matches))
     if len(goodMatch) / len(matches) > MATCH_POINT:
@@ -61,22 +64,23 @@ def internal_server_error(e):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        data = request.get_json()
-        passCode = data['passArea']
-        readBack = mydb.aZick.find_one({'passCode': passCode})
-        try:  # try to get image code from database
-            readCode = pickle.loads(readBack['imageCode'])
-        except TypeError:
-            return '没有这个!PASS'
-        else:
-            with urlopen(data['picture']) as response:  # convert base64 to array
-                picture = response.read()
-            if matchWithDB(readCode, getImageCode(picture)[1]):  # compare incoming picture with database
-                return readBack["words"]
-            else:
-                return '图片PASS不匹配'
-    return render_template('index.html')
+    return redirect(url_for('vTag'))
+    # if request.method == 'POST':
+    #     data = request.get_json()
+    #     passCode = data['passArea']
+    #     readBack = mydb.aZick.find_one({'passCode': passCode})
+    #     try:  # try to get image code from database
+    #         readCode = pickle.loads(readBack['imageCode'])
+    #     except TypeError:
+    #         return '没有这个!PASS'
+    #     else:
+    #         with urlopen(data['picture']) as response:  # convert base64 to array
+    #             picture = response.read()
+    #         if matchWithDB(readCode, getImageCode(picture)[1]):  # compare incoming picture with database
+    #             return readBack["words"]
+    #         else:
+    #             return '图片PASS不匹配'
+    # return render_template('index.html')
 
 
 @app.route('/maker', methods=['GET', 'POST'])
@@ -111,6 +115,27 @@ def passCheck():
             resp = jsonify('')
             resp.status_code = 200
             return resp
+
+
+@app.route('/vTag', methods=['GET', 'POST'])
+def vTag():
+    if request.method == 'POST':
+        data = request.get_json()
+        # print(data)
+        passCode = data['passArea']
+        readBack = mydb.aZick.find_one({'passCode': passCode})
+        try:  # try to get image code from database
+            readCode = pickle.loads(readBack['imageCode'])
+        except TypeError:
+            return '没有这个!PASS'
+        else:
+            with urlopen(data['picture']) as response:  # convert base64 to array
+                picture = response.read()
+            if matchWithDB(readCode, getImageCode(picture)[1]):  # compare incoming picture with database
+                return readBack["words"]
+            else:
+                return ''
+    return render_template('vtag.html')
 
 
 if __name__ == '__main__':
