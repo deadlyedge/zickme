@@ -4,13 +4,19 @@
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+<div id="forSave">
+<!--    <div id="saveLogo">-->
+        <img id="savePicture" src="static/zickme.logo.svg">
+<!--    </div>-->
+</div>
 <div id="downloadDiv">
     <a id="downloadLink" href="#" download style="text-decoration:none;">
-        <input class="btn btn-outline-warning" type="button" value="下载图片（注意一旦离开本页面将无法再次下载）">
+        <input class="btn btn-outline-warning" type="button" value="下载图片">
     </a>
     <a href="/" style="text-decoration:none;">
         <input class="btn btn-outline-info" type="button" value="离开">
     </a>
+    <span class="badge rounded-pill bg-warning text-dark">（注意一旦离开本页面将无法返回下载）</span>
 </div>
 <form action="" method="post"
       class="form" enctype="multipart/form-data" role="form">
@@ -39,12 +45,6 @@
     </div>
     <input class="btn btn-outline-success" id="submit" name="submit" type="submit" value="张贴:Post">
 </form>
-<div id="forSave">
-    <div id="saveLogo">
-        <img id="savePicture" src="static/zickme.logo.svg">请截屏保存
-    </div>
-
-</div>
 {% endblock %}
 {% block scripts %}
 {{ super() }}

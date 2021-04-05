@@ -87,15 +87,18 @@ main {
 }
 
 #forSave {
-  max-width: 100%;
-  max-height: 500px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
+  position: relative;
+  display: inline-block;
   display: none;
 }
-
+#savePicture {
+  display: block;
+  max-width: 100%;
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
 #downloadDiv {
   display: none;
 }
