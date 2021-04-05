@@ -104,6 +104,7 @@ $(document).ready(function () {
           $('#downloadLink').attr('href', textImageURL);
           $('#forSave, #downloadDiv').show();
           $('#showPicture').hide();
+          $('#forSave').focus();
         }
 
         $('#forSave').click(function() {
