@@ -6,7 +6,7 @@ $(document).ready(function () {
     const webcam = new Webcam(webcamElement, 'environment', canvasElement);  //
     var picture = null;
     var logo = new Image();
-    logo.src = 'static/zickme.logo.svg';
+    logo.src = 'static/zickme.logo.png';
 
     webcam.start()
     .then(result =>{

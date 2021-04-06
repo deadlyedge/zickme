@@ -82,6 +82,12 @@
   width: 50%;
 }
 
+#footer {
+  color: black;
+  font-size: 10px;
+  text-align: right;
+}
+
 main {
   font-family: "DejaVu Sans Mono";
 }

@@ -4,7 +4,8 @@
 
 {% block head %}
 {{ super() }}
-<link href="static/zickme.logo.svg" rel="shortcut icon" type="image/svg">
+<link href="static/zickme.logo.png" rel="shortcut icon" type="image/png">
+<link rel="apple-touch-icon" href="static/zickme.logo.png">
 <!--<link href="static/zickme.logo.svg" rel="icon" type="image/svg">-->
 <link href="static/style.css" rel="stylesheet">
 {% endblock %}
@@ -12,8 +13,9 @@
 {% block navbar %}
   <nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/"><img alt="Brand" src="/static/zickme.logo.svg" width="50" height="50" class="me-3"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand" href="/"><img src="/static/zickme.logo.png" width="50" height="50" class="me-3" alt="Zick.me"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04"
+              aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -46,7 +48,7 @@
 <div class="bd-example bg-dark p-5 align-items-center mt-3">
     <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
-            <img src="static/zickme.logo.svg" width="20" height="20">
+            <img src="static/zickme.logo.png" width="20" height="20">
             <strong class="me-auto">Zick.me</strong>
             <small class="text-muted">5 secs ago</small>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -61,6 +63,7 @@
             <p>visit <a class="link-info" href="https://github.com/deadlyedge/zickme">Github...deadlyedge/zickme</a>
             or <a class="link-info" href="mailto:xdream@gmail.com?subject=Feedback about Zickme&body=Message">
             Send me a Feedback. </a></p>
+            <div id="footer"> ver.{{ version }} </div>
         </div>
     </div>
 </div>

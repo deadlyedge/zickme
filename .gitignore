@@ -1,2 +1,4 @@
 /.venv/
 /app/data/images/
+/app/config.json
+

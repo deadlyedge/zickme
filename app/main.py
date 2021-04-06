@@ -1,3 +1,5 @@
+import os
+import json
 import time
 import pickle
 import pymongo
@@ -5,14 +7,21 @@ import cv2
 import numpy as np
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from urllib.request import urlopen
-
 from pymongo.errors import DuplicateKeyError
 
-SAMPLE_POINTS = 200  # 图像细节取样数
-MATCH_POINT = 0.1  # 接近1则比较严格
+with open('config.json', encoding='utf-8') as config_file:
+    config = json.load(config_file)
 
-myclient = pymongo.MongoClient('mongodb://xdream:sima5654@192.168.50.22/')
-mydb = myclient['zickme']
+myclient = pymongo.MongoClient(
+    'mongodb://%s:%s@%s/' % (config['database']['user'],
+                             config['database']['password'],
+                             config['database']['address'])
+)
+mydb = myclient[config['database']['name']]
+
+SAMPLE_POINTS = config['app']['SAMPLE_POINTS']  # 图像细节取样数
+MATCH_POINT = config['app']['MATCH_POINT']  # 接近1则比较严格
+APP_VERSION = config['app']['version']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'some more hard work to do'
@@ -52,14 +61,29 @@ def matchWithDB(code1, code2):
     return False
 
 
+def TimeStampToTime(timestamp):
+    timeStruct = time.localtime(timestamp)
+    return time.strftime('%Y.%m%d.%H%M', timeStruct)
+
+
+def get_FileModifyTime(filePath):
+    t = os.path.getmtime(filePath)
+    return TimeStampToTime(t)
+
+
+config['app']['version'] = get_FileModifyTime('main.py')
+with open('config.json', 'w', encoding='utf-8') as config_file:
+    json.dump(config, config_file, ensure_ascii=False, indent=4)
+
+
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', version=APP_VERSION), 404
 
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500
+    return render_template('500.html', version=APP_VERSION), 500
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -99,7 +123,7 @@ def maker():
             # raise Exception('请尝试其他PASS')
             return '请尝试其他PASS', 400
         return words
-    return render_template('maker.html')
+    return render_template('maker.html', version=APP_VERSION)
 
 
 @app.route('/passCheck', methods=['POST'])
@@ -135,7 +159,7 @@ def vTag():
                 return readBack["words"]
             else:
                 return ''
-    return render_template('vtag.html')
+    return render_template('vtag.html', version=APP_VERSION)
 
 
 if __name__ == '__main__':
