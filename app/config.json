@@ -1,9 +1,9 @@
 {
     "database": {
-        "address": "192.168.50.22",
-        "user": "xdream",
-        "password": "sima5654",
-        "name": "zickme"
+        "address": "hostname",
+        "user": "databaseuser",
+        "password": "databasepassword",
+        "name": "databasename"
     },
     "app": {
         "version": "2021.0406.1027",
