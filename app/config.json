@@ -1,0 +1,13 @@
+{
+    "database": {
+        "address": "192.168.50.22",
+        "user": "xdream",
+        "password": "sima5654",
+        "name": "zickme"
+    },
+    "app": {
+        "version": "2021.0406.1027",
+        "SAMPLE_POINTS": 200,
+        "MATCH_POINT": 0.1
+    }
+}
