@@ -64,6 +64,6 @@ $(document).ready(function () {
             $('#passArea').focus();
             return false;
         };
-        refreshMeter = window.setInterval(getCanvas, 2000);
+        refreshMeter = window.setInterval(getCanvas, 1000);
     });
 });
