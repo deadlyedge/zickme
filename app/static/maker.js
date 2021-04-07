@@ -98,7 +98,7 @@ $(document).ready(function () {
       image.drawImage(logo, 10, 10, 40, 40);
       image.globalAlpha = 1;
       image.textBaseline="ideographic";
-      image.font = 'bold 18px DejaVu Sans Mono';
+      image.font = 'bold 18px Consolas';
       image.fillStyle = 'white';
       image.fillText('长按保存截图 !' + $('#passArea').val() + ':', 10, canvasElement.height);
       var textImageURL = canvasElement.toDataURL('image/jpeg')
