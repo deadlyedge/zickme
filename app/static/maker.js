@@ -16,7 +16,8 @@ $(document).ready(function () {
         console.log(err);
     });
 
-    $("#passArea").on('keyup focusout', function(){
+    $("#passArea").on('input focusout', function(){
+        $(this).val($(this).val().replace(/\s+/g, " "));
         var username = $(this).val().trim();
         if (username != '') {
             $.ajax({
@@ -87,31 +88,29 @@ $(document).ready(function () {
                 $('#passArea').focus();
             }
         });
-
-        function savePic() {
-          var image = canvasElement.getContext('2d');
-          image.globalAlpha = 0.5;
-          image.fillStyle = 'black';
-          image.fillRect(0, canvasElement.height - 24, canvasElement.width, 24);
-          image.drawImage(logo, 10, 10, 40, 40);
-          image.globalAlpha = 1;
-          image.textBaseline="ideographic";
-          image.font = 'bold 18px DejaVu Sans Mono';
-          image.fillStyle = 'white';
-          image.fillText('长按保存截图 !' + $('#passArea').val() + ':', 10, canvasElement.height);
-          var textImageURL = canvasElement.toDataURL('image/jpeg')
-          $('#savePicture').attr('src', textImageURL);
-          $('#downloadLink').attr('href', textImageURL);
-          $('#forSave, #downloadDiv').show();
-          $('#showPicture').hide();
-          $('#forSave').focus();
-        }
-
-        $('#forSave').click(function() {
-          $(this).slideUp();
-          $('#downloadLink').focus();
-        });
-
         $("#submit").prop("disabled", false);
+    });
+    function savePic() {
+      var image = canvasElement.getContext('2d');
+      image.globalAlpha = 0.5;
+      image.fillStyle = 'black';
+      image.fillRect(0, canvasElement.height - 24, canvasElement.width, 24);
+      image.drawImage(logo, 10, 10, 40, 40);
+      image.globalAlpha = 1;
+      image.textBaseline="ideographic";
+      image.font = 'bold 18px DejaVu Sans Mono';
+      image.fillStyle = 'white';
+      image.fillText('长按保存截图 !' + $('#passArea').val() + ':', 10, canvasElement.height);
+      var textImageURL = canvasElement.toDataURL('image/jpeg')
+      $('#savePicture').attr('src', textImageURL);
+      $('#downloadLink').attr('href', textImageURL);
+      $('#forSave, #downloadDiv').show();
+      $('#showPicture').hide();
+      $('#forSave').focus();
+    }
+
+    $('#forSave').click(function() {
+      $(this).slideUp();
+      $('#downloadLink').focus();
     });
 });

@@ -1,4 +1,4 @@
+# Created by .ignore support plugin (hsz.mobi)
 /.venv/
-/app/data/images/
-/app/config.json
-
+/app/data/
+/app/config.*

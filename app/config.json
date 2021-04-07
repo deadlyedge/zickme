@@ -6,7 +6,7 @@
         "name": "zickme"
     },
     "app": {
-        "version": "2021.0406.2052",
+        "version": "2021.0407.1849",
         "SAMPLE_POINTS": 200,
         "MATCH_POINT": 0.1
     }
