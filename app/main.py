@@ -1,16 +1,15 @@
 import os
-import json
+import toml
 import time
 import pickle
 import pymongo
 import cv2
 import numpy as np
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify
 from urllib.request import urlopen
 from pymongo.errors import DuplicateKeyError
 
-with open('config.json', encoding='utf-8') as config_file:
-    config = json.load(config_file)
+config = toml.load('config.toml')
 
 myclient = pymongo.MongoClient(
     'mongodb://%s:%s@%s/' % (config['database']['user'],
@@ -75,8 +74,8 @@ def get_FileModifyTime(filePath):
 
 
 config['app']['version'] = get_FileModifyTime('main.py')
-with open('config.json', 'w', encoding='utf-8') as config_file:
-    json.dump(config, config_file, ensure_ascii=False, indent=4)
+with open('config.toml', 'w', encoding='utf-8') as config_file:
+    toml.dump(config, config_file)
 
 
 @app.errorhandler(404)
@@ -107,7 +106,6 @@ def maker():
         try:
             writeDB(imageCode, words, passCode)
         except DuplicateKeyError:
-            # raise Exception('请尝试其他PASS')
             return '请尝试其他PASS', 400
         return words
     return render_template('maker.html', version=APP_VERSION)
@@ -132,7 +130,6 @@ def passCheck():
 def vTag():
     if request.method == 'POST':
         data = request.get_json()
-        # print(data)
         passCode = data['passArea']
         readBack = mydb.aZick.find_one({'passCode': passCode})
         try:  # try to get image code from database
