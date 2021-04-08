@@ -19,11 +19,11 @@
 
 #passArea {
   font-family: "Consolas";
-  color: #22b;
+  color: rgb(34, 88, 187);
 }
 
 #pass_response {
-  color: #b22;
+  color: rgb(243, 70, 70);
   animation: blink 1s 3;
   animation-iteration-count:infinite;
   padding: 0px 10px;

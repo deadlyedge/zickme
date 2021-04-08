@@ -47,13 +47,13 @@ $(document).ready(function () {
 
     $('#reset').click(function() {
         picture = null;
-        $('#imageSnapped').attr('src', '');
-        $('#passArea').val('');
-        $('#showWords').text('');
         $('#showWords').hide();
         $('#videoEX, #passDiv, #submit, #snap, .directions').show(500);
-        $('#passArea').focus();
+//        $('#imageSnapped').attr('src', '');
+        $('#passArea').val('');
+        $('#showWords').text('');
         window.clearInterval(refreshMeter);
+        $('#passArea').focus();
         //webcam.start()
     });
 

@@ -1,0 +1,13 @@
+# this is a sample of config file.
+# remove prefix '_' of 'config.toml' if you want to use it
+
+[database]
+address = "your.database.host"
+user = "your.username"
+password = "your.password"
+name = "your.database.name"
+
+[app]
+version = "2021.xxxx.xxxx"      # should be rewritten by 'main.py' with the modify time of itself.
+SAMPLE_POINTS = 200     # how many describe point should openCV.orb find.
+MATCH_POINT = 0.2       # how much is the capture similar to the original maker picture.
