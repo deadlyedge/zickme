@@ -9,8 +9,10 @@ from flask import Flask, render_template, request, jsonify
 from urllib.request import urlopen
 from pymongo.errors import DuplicateKeyError
 
+# load config file, reference to '_config.toml', by the way, '.toml' looks nice!
 config = toml.load('config.toml')
 
+# connect mongoDB
 myclient = pymongo.MongoClient(
     'mongodb://%s:%s@%s/' % (config['database']['user'],
                              config['database']['password'],
@@ -18,16 +20,20 @@ myclient = pymongo.MongoClient(
 )
 mydb = myclient[config['database']['name']]
 
+# read constant
 SAMPLE_POINTS = config['app']['SAMPLE_POINTS']  # 图像细节取样数
 MATCH_POINT = config['app']['MATCH_POINT']  # 接近1则比较严格
-APP_VERSION = config['app']['version']
+APP_VERSION = config['app']['version']  # show in the end of pages, showing the last modified time of this .py
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'some more hard work to do'
 
 
-def getImageCode(imageFile):
-    fileString = imageFile  # .read() if it's a file and not a string
+def getImageCode(imageFileCode: str) -> tuple:
+    """
+    Use openCV.orb model to detect and compute the image code.
+    """
+    fileString = imageFileCode  # .read() if it's a file and not a string
     imgArray = np.frombuffer(fileString, np.uint8)  # change from 'fromstring'
     imageGray = cv2.imdecode(imgArray, cv2.COLOR_RGB2GRAY)
     orb = cv2.ORB_create(SAMPLE_POINTS)
@@ -35,7 +41,7 @@ def getImageCode(imageFile):
     return keypoints, descriptors  # , image
 
 
-def writeDB(codes, words, passCode):
+def writeDB(codes: list, words: str, passCode: str):
     timestamp = time.time()
     imageCode = pickle.dumps(codes, protocol=pickle.HIGHEST_PROTOCOL)
     mydb.aZick.insert_one({
@@ -47,35 +53,51 @@ def writeDB(codes, words, passCode):
     })
 
 
-def matchWithDB(code1, code2):
+def matchWithDB(code1: list, code2: list):
+    """
+    Use NORM_HAMMING function to match the two images, calculate the distance of vectors
+    from them, and if the match points stay in a close distance, thinking they are similar.
+    :param code1: list
+    :param code2: list
+    :return: bool
+    """
     bf = cv2.BFMatcher(cv2.NORM_HAMMING)
     try:
         matches = bf.knnMatch(code1, code2, k=2)
-    except cv2.error:
+    except cv2.error:  # this could be cause by a network lag or break, i thought.
         return False
     try:
         goodMatch = [m for (m, n) in matches if m.distance < 0.8 * n.distance]
-    except ValueError:
+    except ValueError:  # could be network problem either, sorry...
         return False
+    # if you run this locally, print a 'similarity point' could help adjusting constant for a acceptable result.
     print(len(goodMatch) / len(matches))
     if len(goodMatch) / len(matches) > MATCH_POINT:
         return True
     return False
 
 
-def TimeStampToTime(timestamp):
-    timeStruct = time.localtime(timestamp)
-    return time.strftime('%Y.%m%d.%H%M', timeStruct)
+def versionUpdate():
+    """
+        this function generate a version info, helps sync the local and remote files,
+        if you want to use a server...
+    """
+    def TimeStampToTime(timestamp):
+        timeStruct = time.localtime(timestamp)
+        return time.strftime('%Y.%m%d.%H%M', timeStruct)
+
+    def get_FileModifyTime(filePath):
+        t = os.path.getmtime(filePath)
+        return TimeStampToTime(t)
+
+    config['app']['version'] = get_FileModifyTime('main.py')
+    with open('config.toml', 'w', encoding='utf-8') as config_file:
+        toml.dump(config, config_file)
 
 
-def get_FileModifyTime(filePath):
-    t = os.path.getmtime(filePath)
-    return TimeStampToTime(t)
-
-
-config['app']['version'] = get_FileModifyTime('main.py')
-with open('config.toml', 'w', encoding='utf-8') as config_file:
-    toml.dump(config, config_file)
+"""
+Flask routers
+"""
 
 
 @app.errorhandler(404)
@@ -95,6 +117,10 @@ def about():
 
 @app.route('/maker', methods=['GET', 'POST'])
 def maker():
+    """
+    Render the maker page.
+    Accept POST JSON by ajax request, decode from BASE64 and then write to database
+    """
     if request.method == 'POST':
         data = request.get_json()
         words = data['wordsArea']
@@ -102,8 +128,12 @@ def maker():
         with urlopen(data['picture']) as response:  # convert base64 to array
             picture = response.read()
         imageCode = getImageCode(picture)[1]
-        print(imageCode, words, passCode)
+        # print(imageCode, words, passCode)
         try:
+            """
+            for some reason in frontend, the pass may be duplicate,
+            I set the mongoDB with 'mongoDB compass', set the 'passCode' to a UNIQUE index to catch this error.
+            """
             writeDB(imageCode, words, passCode)
         except DuplicateKeyError:
             return '请尝试其他PASS', 400
@@ -113,9 +143,12 @@ def maker():
 
 @app.route('/passCheck', methods=['POST'])
 def passCheck():
+    """
+    Check if the PASS available.
+    """
     if request.method == 'POST':
         data = request.get_json()
-        readBack = mydb.aZick.find_one({'passCode': data['username']})
+        readBack = mydb.aZick.find_one({'passCode': data['passCode']})
         if readBack:
             resp = jsonify('PASS unavailable')
             resp.status_code = 200
@@ -128,6 +161,13 @@ def passCheck():
 
 @app.route('/vTag', methods=['GET', 'POST'])
 def vTag():
+    """
+    Render the 'get words' page, for some historical reason, it's named 'vTag'.
+    Find WORDS by the PASS client gives,
+    return them to client if the image captured similar to the original one.
+    There should be some middleware to process the matching for security reason,
+    but as a project for fun, I leave this part to a future function.
+    """
     if request.method == 'POST':
         data = request.get_json()
         passCode = data['passArea']

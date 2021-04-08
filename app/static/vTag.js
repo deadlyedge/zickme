@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    // init page resource
     $('#vTag').addClass('active');
     const webcamElement = document.getElementById('videoXP');
     const canvasElement = document.getElementById('canvas');
@@ -7,6 +8,7 @@ $(document).ready(function () {
     var refreshMeter = null
     $('#passArea').focus()
 
+    // init webcam
     webcam.start()
     .then(result =>{
         console.log("webcam started");
@@ -15,14 +17,17 @@ $(document).ready(function () {
         console.log(err);
     });
 
+    // get data from canvas
     function getCanvas(){
         console.log("refresh");
-        let snapped = webcam.snap();
+        let snapped = webcam.snap();    // get image from webcam
         picture = canvasElement.toDataURL('image/jpeg');
+        // make a dict of pass and picture code(image/base64).
         var data = {
             passArea: $('#passArea').val(),
             picture: picture
         };
+        // post the dict to have them compared with the original data
         $.ajax({
             type: 'POST',
             url: '/vTag',
@@ -30,6 +35,7 @@ $(document).ready(function () {
             contentType: "application/json",
             success: function (response) {
                 $('#passDiv, #submit').hide();
+                // if success, show the word.
                 if(response){
                     $('#showWords').text(response);
                     $('#showWords').show();
@@ -43,13 +49,11 @@ $(document).ready(function () {
         });
     }
 
-    //var refreshMeter = window.setInterval(getCanvas, 500);
-
+    // re-init the page
     $('#reset').click(function() {
         picture = null;
         $('#showWords').hide();
         $('#videoEX, #passDiv, #submit, #snap, .directions').show(500);
-//        $('#imageSnapped').attr('src', '');
         $('#passArea').val('');
         $('#showWords').text('');
         window.clearInterval(refreshMeter);
@@ -57,6 +61,7 @@ $(document).ready(function () {
         //webcam.start()
     });
 
+    // submit the pass to start the capture and compare process.
     $('#submit').click(function(event) {
         event.preventDefault();
         if( !$('#passArea').val() ) {
@@ -64,6 +69,7 @@ $(document).ready(function () {
             $('#passArea').focus();
             return false;
         };
+        // refresh capture and compare every 1000ms
         refreshMeter = window.setInterval(getCanvas, 1000);
     });
 });
