@@ -2,3 +2,4 @@ Flask>=1.1.2
 numpy>=1.20.2
 pymongo>=3.11.3
 opencv-python-headless>=4.5.1.48
+toml>=0.10.2
