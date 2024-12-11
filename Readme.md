@@ -1,3 +1,5 @@
+Deprecated and inherited by https://github.com/deadlyedge/jiaoznet-api
+
 # Zickme
 website: https://zick.me/
 
